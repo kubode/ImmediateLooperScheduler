@@ -1,0 +1,31 @@
+buildscript {
+    ext.versions = [
+            compileSdkVersion: 23,
+            buildToolsVersion: '24.0.0',
+            minSdkVersion    : 9,
+            targetSdkVersion : 23,
+    ]
+    ext.dependencyNotations = [
+            androidPlugin    : 'com.android.tools.build:gradle:2.1.2',
+            supportTestRunner: 'com.android.support.test:runner:0.5',
+            rxAndroid        : 'io.reactivex:rxandroid:1.2.1',
+    ]
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath dependencyNotations.androidPlugin
+    }
+}
+
+allprojects {
+    repositories {
+        jcenter()
+    }
+    group 'com.github.kubode'
+    version '1.0.0'
+}
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}

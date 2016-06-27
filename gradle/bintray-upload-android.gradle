@@ -1,0 +1,84 @@
+apply plugin: 'maven-publish'
+apply plugin: 'com.github.dcendents.android-maven'
+apply plugin: 'com.jfrog.bintray'
+
+task sourcesJar(type: Jar) {
+    from android.sourceSets.main.java.srcDirs
+    classifier = 'sources'
+}
+
+task javadoc(type: Javadoc) {
+    source = android.sourceSets.main.java.srcDirs
+    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+    if (JavaVersion.current().isJava8Compatible()) {
+        options.addStringOption('Xdoclint:none', '-quiet')
+    }
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    from javadoc.destinationDir
+    classifier = 'javadoc'
+}
+
+artifacts {
+    archives sourcesJar
+    archives javadocJar
+}
+
+install {
+    repositories.mavenInstaller {
+        pom {
+            project {
+                packaging 'aar'
+                name project.name
+                url 'https://github.com/kubode/ImmediateLooperScheduler'
+                licenses {
+                    license {
+                        name 'The Apache Software License, Version 2.0'
+                        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+                developers {
+                    developer {
+                        id 'kubode'
+                        name 'Masatoshi Kubode'
+                        email 'swi.masatoshi@gmail.com'
+                    }
+                }
+                scm {
+                    connection 'https://github.com/kubode/ImmediateLooperScheduler.git'
+                    developerConnection 'https://github.com/kubode/ImmediateLooperScheduler.git'
+                    url 'https://github.com/kubode/ImmediateLooperScheduler'
+                }
+            }
+        }
+    }
+}
+
+def acquireUser() {
+    return System.env.BINTRAY_USER ?: (hasProperty('bintrayUser') ? bintrayUser : 'nouser')
+}
+
+def acquireKey() {
+    return System.env.BINTRAY_KEY ?: (hasProperty('bintrayKey') ? bintrayKey : 'nokey')
+}
+
+bintray {
+    user = acquireUser()
+    key = acquireKey()
+    configurations = ['archives']
+    pkg {
+        repo = 'maven'
+        name = "${project.group}:${project.name}"
+        desc = project.description
+        websiteUrl = 'https://github.com/kubode/ImmediateLooperScheduler'
+        issueTrackerUrl = 'https://github.com/kubode/ImmediateLooperScheduler/issues'
+        vcsUrl = 'https://github.com/kubode/ImmediateLooperScheduler.git'
+        licenses = ['Apache-2.0']
+        labels = ['android', 'aar', 'rxandroid']
+        publicDownloadNumbers = true
+        githubRepo = 'kubode/ImmediateLooperScheduler'
+        githubReleaseNotesFile = 'CHANGELOG.md'
+        version.name = project.version
+    }
+}
