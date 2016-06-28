@@ -3,7 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/ImmediateLooperScheduler.iml" filepath="$PROJECT_DIR$/ImmediateLooperScheduler.iml" />
-      <module fileurl="file://$PROJECT_DIR$/immediate-looper-scheduler/schedulers.iml" filepath="$PROJECT_DIR$/immediate-looper-scheduler/schedulers.iml" />
+      <module fileurl="file://$PROJECT_DIR$/immediate-looper-scheduler/immediate-looper-scheduler.iml" filepath="$PROJECT_DIR$/immediate-looper-scheduler/immediate-looper-scheduler.iml" />
     </modules>
   </component>
 </project>
