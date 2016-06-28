@@ -1,3 +1,5 @@
+description 'A Scheduler which executes actions immediate or on looper.'
+
 apply plugin: 'com.android.library'
 
 android {
