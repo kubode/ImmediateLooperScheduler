@@ -8,7 +8,7 @@ buildscript {
     ext.dependencyNotations = [
             androidPlugin     : 'com.android.tools.build:gradle:2.1.2',
             bintrayPlugin     : 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.6',
-            androidMavenPlugin: 'com.github.dcendents:android-maven-gradle-plugin:1.3',
+            androidMavenPlugin: 'com.github.dcendents:android-maven-gradle-plugin:1.4',
             supportTestRunner : 'com.android.support.test:runner:0.5',
             rxAndroid         : 'io.reactivex:rxandroid:1.2.1',
     ]
