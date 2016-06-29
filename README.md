@@ -48,8 +48,8 @@ Why
 ---
 
 `AndroidSchedulers.mainThread()` is always dispatches actions to `Handler`.
-So, if managing data sets with `BehaviorSubject` in MVVM pattern,
-`AndroidSchedulers.mainThread()` is not executes when subscribing to data sets.
+
+So, `AndroidSchedulers.mainThread()` not executes actions when subscribing to data sets that using `BehaviorSubject` in MVVM pattern.
 
 ```java
 public static final BehaviorSubject<List<String>> dataSet = BehaviorSubject.create(Collections.emptyList());
@@ -67,7 +67,7 @@ public static final BehaviorSubject<List<String>> dataSet = BehaviorSubject.crea
 }
 ```
 
-In this case, `ListView` can't restore scroll position when re-created time.
+In this case, `ListView` can't restore scroll position when re-created.
 
 `ImmediateLooperScheduler` avoids this issue because it executes actions immediately when actions emitted on same `Looper`.
 
