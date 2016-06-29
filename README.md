@@ -71,20 +71,6 @@ In this case, `ListView` can't restore scroll position when re-created time.
 
 `ImmediateLooperScheduler` avoids this issue because it executes actions immediately when actions emitted on same `Looper`.
 
-```java
-// In ListActivity
-@Override protected void onCreate(Bundle savedInstanceState) {
-    ArrayAdapter<String> adapter = new ArrayAdapter();
-    setAdapter(adapter);
-    dataSet.observeOn(ImmediateLooperScheduelr.MAIN)
-            .subscribe(list -> {
-                // This block called immediately.
-                adapter.clear();
-                adapter.addAll(list);
-            });
-}
-```
-
 
 License
 ---
