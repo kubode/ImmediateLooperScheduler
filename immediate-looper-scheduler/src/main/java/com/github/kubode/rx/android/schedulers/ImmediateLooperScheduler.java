@@ -17,6 +17,11 @@ import rx.subscriptions.CompositeSubscription;
  */
 public class ImmediateLooperScheduler extends Scheduler {
 
+    /**
+     * A {@link Scheduler} which executes actions on the Android UI thread.
+     */
+    public static final ImmediateLooperScheduler MAIN = new ImmediateLooperScheduler(Looper.getMainLooper());
+
     private final Looper looper;
     private final Scheduler looperScheduler;
     private final Scheduler immediateScheduler;

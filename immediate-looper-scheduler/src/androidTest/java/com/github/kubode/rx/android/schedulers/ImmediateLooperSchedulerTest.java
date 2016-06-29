@@ -14,6 +14,8 @@ import java.util.concurrent.Semaphore;
 
 import rx.Scheduler;
 import rx.Single;
+import rx.android.plugins.RxAndroidPlugins;
+import rx.android.plugins.RxAndroidSchedulersHook;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 
