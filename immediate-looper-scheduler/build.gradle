@@ -1,6 +1,7 @@
 description 'A Scheduler which executes actions immediate or on looper.'
 
 apply plugin: 'com.android.library'
+apply plugin: 'jacoco'
 
 android {
     compileSdkVersion versions.compileSdkVersion
@@ -12,6 +13,9 @@ android {
         testInstrumentationRunner 'android.support.test.runner.AndroidJUnitRunner'
     }
     buildTypes {
+        debug {
+            testCoverageEnabled true
+        }
         release {
             minifyEnabled false
             consumerProguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
@@ -23,5 +27,7 @@ dependencies {
     androidTestCompile dependencyNotations.supportTestRunner
     compile dependencyNotations.rxAndroid
 }
+
+check.dependsOn 'createDebugCoverageReport'
 
 apply from: rootProject.file('gradle/bintray-upload-android.gradle')
