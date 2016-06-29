@@ -6,13 +6,8 @@ import android.support.test.runner.AndroidJUnit4;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import rx.android.plugins.RxAndroidPlugins;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.subjects.BehaviorSubject;
 
 import static org.junit.Assert.assertEquals;
 
@@ -25,8 +20,5 @@ public class ImmediateLooperSchedulerHookTest {
         RxAndroidPlugins.getInstance().reset();
         RxAndroidPlugins.getInstance().registerSchedulersHook(new ImmediateLooperSchedulerHook());
         assertEquals(ImmediateLooperScheduler.MAIN, AndroidSchedulers.mainThread());
-    }
-    void a() {
-        BehaviorSubject<List<String>> dataSet = BehaviorSubject.<List<String>>create(new ArrayList<String>());
     }
 }
