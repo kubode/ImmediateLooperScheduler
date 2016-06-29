@@ -6,16 +6,15 @@ import android.os.SystemClock;
 import android.support.test.filters.SmallTest;
 import android.support.test.runner.AndroidJUnit4;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.util.concurrent.Semaphore;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import rx.Scheduler;
 import rx.Single;
-import rx.android.plugins.RxAndroidPlugins;
-import rx.android.plugins.RxAndroidSchedulersHook;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 
@@ -26,10 +25,7 @@ import static org.junit.Assert.assertEquals;
 public class ImmediateLooperSchedulerTest {
 
     private final Looper main = Looper.getMainLooper();
-    private final Handler mainHandler = new Handler(main);
     private Looper other;
-    private Handler otherHandler;
-    private volatile boolean isEmitted;
 
     public ImmediateLooperSchedulerTest() {
         // initialize other looper.
@@ -40,17 +36,11 @@ public class ImmediateLooperSchedulerTest {
                 Thread.currentThread().setName("other");
                 Looper.prepare();
                 other = Looper.myLooper();
-                otherHandler = new Handler(other);
                 release(lock);
                 Looper.loop();
             }
         }.start();
         waitRelease(lock);
-    }
-
-    @Before
-    public void setUp() {
-        isEmitted = false;
     }
 
     private Semaphore createLock() {
@@ -67,17 +57,24 @@ public class ImmediateLooperSchedulerTest {
         semaphore.acquireUninterruptibly();
     }
 
-    private void test(final Handler handler, final Scheduler scheduler, final boolean isEmitExpected) {
+    private void test(Looper from, final Scheduler scheduler, final boolean isDelayed, boolean isEmitExpected) {
         final Semaphore handlerLock = createLock();
         final Semaphore onNextLock = createLock();
-        handler.post(new Runnable() {
+        final AtomicBoolean isEmitted = new AtomicBoolean();
+        new Handler(from).post(new Runnable() {
             @Override
             public void run() {
-                Single.just("test").observeOn(scheduler).subscribe(new Action1<String>() {
+                Single<Boolean> single = Single.just(true);
+                if (isDelayed) {
+                    single = single.delay(20, TimeUnit.MILLISECONDS, scheduler);
+                } else {
+                    single = single.observeOn(scheduler);
+                }
+                single.subscribe(new Action1<Boolean>() {
                     @Override
-                    public void call(String s) {
-                        SystemClock.sleep(100);
-                        isEmitted = true;
+                    public void call(Boolean b) {
+                        SystemClock.sleep(20);
+                        isEmitted.set(b);
                         release(onNextLock);
                     }
                 });
@@ -85,32 +82,43 @@ public class ImmediateLooperSchedulerTest {
             }
         });
         waitRelease(handlerLock);
-        assertEquals(isEmitExpected, isEmitted);
+        assertEquals(isEmitExpected, isEmitted.get());
         waitRelease(onNextLock);
     }
 
     @Test
     public void looperSchedulerNotEmitImmediately() {
-        test(mainHandler, AndroidSchedulers.from(main), false);
+        test(main, AndroidSchedulers.from(main), false, false);
     }
 
     @Test
     public void immediateOnMainToMain() {
-        test(mainHandler, new ImmediateLooperScheduler(main), true);
+        test(main, new ImmediateLooperScheduler(main), false, true);
     }
 
     @Test
     public void notImmediateOnMainToOther() {
-        test(mainHandler, new ImmediateLooperScheduler(other), false);
+        test(main, new ImmediateLooperScheduler(other), false, false);
     }
 
     @Test
     public void notImmediateOnOtherToMain() {
-        test(otherHandler, new ImmediateLooperScheduler(main), false);
+        test(other, new ImmediateLooperScheduler(main), false, false);
     }
 
     @Test
     public void immediateOnOtherToOther() {
-        test(otherHandler, new ImmediateLooperScheduler(other), true);
+        test(other, new ImmediateLooperScheduler(other), false, true);
+    }
+
+    // Delayed
+    @Test
+    public void looperSchedulerNotEmitImmediatelyDelayed() {
+        test(main, AndroidSchedulers.from(main), true, false);
+    }
+
+    @Test
+    public void immediateDelayedOnMainToMain() {
+        test(main, new ImmediateLooperScheduler(main), true, true);
     }
 }
