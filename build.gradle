@@ -1,14 +1,14 @@
 buildscript {
     ext.versions = [
-            compileSdkVersion: 23,
-            buildToolsVersion: '24.0.0',
+            compileSdkVersion: 24,
+            buildToolsVersion: '25.0.0',
             minSdkVersion    : 9,
-            targetSdkVersion : 23,
+            targetSdkVersion : 24,
     ]
     ext.dependencyNotations = [
-            androidPlugin     : 'com.android.tools.build:gradle:2.1.2',
-            bintrayPlugin     : 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.6',
-            androidMavenPlugin: 'com.github.dcendents:android-maven-gradle-plugin:1.4',
+            androidPlugin     : 'com.android.tools.build:gradle:2.2.2',
+            bintrayPlugin     : 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.2',
+            androidMavenPlugin: 'com.github.dcendents:android-maven-gradle-plugin:1.5',
             supportTestRunner : 'com.android.support.test:runner:0.5',
             rxAndroid         : 'io.reactivex:rxandroid:1.2.1',
     ]
