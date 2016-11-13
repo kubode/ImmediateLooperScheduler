@@ -13,10 +13,10 @@ import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import rx.Scheduler;
-import rx.Single;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
+import io.reactivex.Scheduler;
+import io.reactivex.Single;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Consumer;
 
 import static org.junit.Assert.assertEquals;
 
@@ -70,9 +70,9 @@ public class ImmediateLooperSchedulerTest {
                 } else {
                     single = single.observeOn(scheduler);
                 }
-                single.subscribe(new Action1<Boolean>() {
+                single.subscribe(new Consumer<Boolean>() {
                     @Override
-                    public void call(Boolean b) {
+                    public void accept(Boolean b) {
                         SystemClock.sleep(20);
                         isEmitted.set(b);
                         release(onNextLock);

@@ -26,13 +26,13 @@ dependencies {
 
 There are two ways of implementing `ImmediateLooperScheduler`.
 
-1. Override `AndroidSchedulers.mainThread()` by register the hook.
+1. Override `AndroidSchedulers.mainThread()` with `RxAndroidPlugins`.
 
     ```java
     public class MyApplication extends Application {
         @Override
         protected void onCreate() {
-            RxAndroidPlugins.getInstance().registerSchedulersHook(new ImmediateLooperSchedulerHook());
+            RxAndroidPlugins.setInitMainThreadSchedulerHandler(schedulerCallable -> ImmediateLooperScheduler.MAIN);
         }
     }
     ```

@@ -10,7 +10,7 @@ buildscript {
             bintrayPlugin     : 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.2',
             androidMavenPlugin: 'com.github.dcendents:android-maven-gradle-plugin:1.5',
             supportTestRunner : 'com.android.support.test:runner:0.5',
-            rxAndroid         : 'io.reactivex:rxandroid:1.2.1',
+            rxAndroid         : 'io.reactivex.rxjava2:rxandroid:2.0.1',
     ]
     repositories {
         jcenter()
@@ -27,7 +27,7 @@ allprojects {
         jcenter()
     }
     group 'com.github.kubode'
-    version '1.1.0'
+    version '2.0.0'
 }
 
 task clean(type: Delete) {

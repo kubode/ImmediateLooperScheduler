@@ -4,12 +4,11 @@ import android.os.Looper;
 
 import java.util.concurrent.TimeUnit;
 
-import rx.Scheduler;
-import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action0;
-import rx.schedulers.Schedulers;
-import rx.subscriptions.CompositeSubscription;
+import io.reactivex.Scheduler;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * A {@link Scheduler} which executes actions on {@link Looper}.
@@ -34,7 +33,7 @@ public class ImmediateLooperScheduler extends Scheduler {
     public ImmediateLooperScheduler(Looper looper) {
         this.looper = looper;
         this.looperScheduler = AndroidSchedulers.from(looper);
-        this.immediateScheduler = Schedulers.immediate();
+        this.immediateScheduler = Schedulers.trampoline();
     }
 
     @Override
@@ -47,33 +46,13 @@ public class ImmediateLooperScheduler extends Scheduler {
         private final Looper looper;
         private final Worker looperWorker;
         private final Worker immediateWorker;
-        private final Subscription subscription;
+        private final Disposable disposable;
 
         private ImmediatelyWorker(Looper looper, Worker looperWorker, Worker immediateWorker) {
             this.looper = looper;
             this.looperWorker = looperWorker;
             this.immediateWorker = immediateWorker;
-            this.subscription = new CompositeSubscription(looperWorker, immediateWorker);
-        }
-
-        @Override
-        public void unsubscribe() {
-            subscription.unsubscribe();
-        }
-
-        @Override
-        public boolean isUnsubscribed() {
-            return subscription.isUnsubscribed();
-        }
-
-        @Override
-        public Subscription schedule(Action0 action) {
-            return getWorker().schedule(action);
-        }
-
-        @Override
-        public Subscription schedule(Action0 action, long delayTime, TimeUnit unit) {
-            return getWorker().schedule(action, delayTime, unit);
+            this.disposable = new CompositeDisposable(looperWorker, immediateWorker);
         }
 
         private Worker getWorker() {
@@ -82,6 +61,21 @@ public class ImmediateLooperScheduler extends Scheduler {
             } else {
                 return looperWorker;
             }
+        }
+
+        @Override
+        public Disposable schedule(Runnable run, long delay, TimeUnit unit) {
+            return getWorker().schedule(run, delay, unit);
+        }
+
+        @Override
+        public void dispose() {
+            disposable.dispose();
+        }
+
+        @Override
+        public boolean isDisposed() {
+            return disposable.isDisposed();
         }
     }
 }
