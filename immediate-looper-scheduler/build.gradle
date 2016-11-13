@@ -21,6 +21,9 @@ android {
             consumerProguardFiles 'proguard-rules.pro'
         }
     }
+    lintOptions {
+        textReport true
+    }
 }
 
 dependencies {
